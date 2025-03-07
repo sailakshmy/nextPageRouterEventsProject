@@ -22,7 +22,7 @@ const EventItem = (props) => {
           <h2>{title}</h2>
           <div className={classes.date}>
             <DateIcon />
-            <time datetime="">{readableDate}</time>
+            <time dateTime="">{readableDate}</time>
           </div>
           <div className={classes.address}>
             <LocationIcon />
