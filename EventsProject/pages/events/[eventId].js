@@ -3,13 +3,14 @@ import React from "react";
 import EventContent from "../../components/event-detail/event-content";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventSummary from "../../components/event-detail/event-summary";
+import ErrorAlert from "../../components/ui/error-alert";
 import { getEventById } from "../../dummy-data";
 
 const EventsDetailsPage = () => {
   const router = useRouter();
   const eventDetails = getEventById(router.query.eventId);
   if (!eventDetails) {
-    return <p>Not Found</p>;
+    return <ErrorAlert>Not Found</ErrorAlert>;
   }
   return (
     <>
