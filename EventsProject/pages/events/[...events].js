@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -30,12 +31,36 @@ const OtherEvents = () => {
     }
   }, [data]);
 
+  let pageHeadData = (
+    <Head>
+      <title>Events</title>
+      <meta
+        content={`A list of events for a specific period`}
+        name="description"
+      />
+    </Head>
+  );
   if (!loadedEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <>
+        {pageHeadData}
+        <p className="center">Loading...</p>
+      </>
+    );
   }
 
   const numYear = +filterData?.[0]; // Transforming string to Number using +;
   const numMonth = +filterData?.[1]; // Transforming string to Number using +;
+
+  pageHeadData = (
+    <Head>
+      <title>Events</title>
+      <meta
+        content={`All events for ${numMonth}/${numYear}`}
+        name="description"
+      />
+    </Head>
+  );
 
   // if (hasError) {
   if (
@@ -49,6 +74,7 @@ const OtherEvents = () => {
   ) {
     return (
       <div className="center">
+        {pageHeadData}
         <ErrorAlert>Invalid filters, please adjust your values</ErrorAlert>
         <Button link="/events">Back To Events page</Button>
       </div>
@@ -70,6 +96,7 @@ const OtherEvents = () => {
   if (!filteredEvents || filteredEvents?.length === 0) {
     return (
       <div className="center">
+        {pageHeadData}
         <ErrorAlert>No event found for the filter</ErrorAlert>
         <Button link="/events">Back To Events page</Button>
       </div>
@@ -79,6 +106,7 @@ const OtherEvents = () => {
   const date = new Date(numYear, numMonth - 1);
   return (
     <>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList events={loadedEvents} />
     </>
