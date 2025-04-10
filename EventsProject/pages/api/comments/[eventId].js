@@ -1,7 +1,7 @@
 function handler(req, res) {
   const eventId = req.query.eventId;
   if (req.method === "POST") {
-    const { email, name, comment } = req.body;
+    const { email, name, text } = req.body;
     if (
       !email ||
       !email.includes("@") ||
@@ -20,7 +20,7 @@ function handler(req, res) {
       id: new Date().toISOString(),
       email,
       name,
-      text: comment,
+      text,
     };
     console.log("data", newComment);
     res.status(201).json({
@@ -43,7 +43,7 @@ function handler(req, res) {
         text: "Some comments again",
       },
     ];
-    res.send(200).json({
+    res.status(200).json({
       comments: dummyComments,
     });
   }
