@@ -1,3 +1,5 @@
+import { MongoClient } from "mongodb";
+
 function handler(req, res) {
   if (req.method === "POST") {
     const userEmail = req.body.email;
@@ -7,6 +9,9 @@ function handler(req, res) {
       });
       return;
     }
+    MongoClient.connect(
+      "mongodb://Groot:IAmGroot@ac-lpjqpry-shard-00-00.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-01.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-02.87nimnv.mongodb.net:27017/?replicaSet=atlas-ejgl3x-shard-0&ssl=true&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
+    );
     console.log("userEmail", userEmail);
     res.status(201).json({
       message: "Signed up!",
@@ -15,3 +20,5 @@ function handler(req, res) {
 }
 
 export default handler;
+
+// jRZTEHBvQHx2vGjA
