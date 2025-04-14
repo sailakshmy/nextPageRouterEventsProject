@@ -52,8 +52,15 @@ async function handler(req, res) {
         text: "Some comments again",
       },
     ];
+    const db = client.db();
+    const documents = await db
+      .collection("comments")
+      .find()
+      .sort({ _id: -1 }) // Sort by _id in descending order
+      .toArray();
+    console.log("documents", documents);
     res.status(200).json({
-      comments: dummyComments,
+      comments: documents,
     });
     client.close();
   }
