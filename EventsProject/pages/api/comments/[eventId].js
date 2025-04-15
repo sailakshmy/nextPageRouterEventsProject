@@ -1,9 +1,20 @@
-import { MongoClient } from "mongodb";
+import {
+  connectDatabase,
+  getAllDocuments,
+  insertDocument,
+} from "../../../helpers/db-utils";
 
 async function handler(req, res) {
-  const client = await MongoClient.connect(
-    "mongodb://Groot:IAmGroot@ac-lpjqpry-shard-00-00.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-01.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-02.87nimnv.mongodb.net:27017/events?replicaSet=atlas-ejgl3x-shard-0&ssl=true&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
-  );
+  let client;
+  try {
+    client = await connectDatabase();
+  } catch (error) {
+    res.status(500).json({
+      message: "Could not connect to database!",
+    });
+
+    return;
+  }
   const eventId = req.query.eventId;
   if (req.method === "POST") {
     const { email, name, text } = req.body;
@@ -18,6 +29,8 @@ async function handler(req, res) {
       res.status(422).json({
         message: "Invalid inputs",
       });
+
+      client.close();
       return;
     }
 
@@ -27,42 +40,43 @@ async function handler(req, res) {
       text,
       eventId,
     };
+    let result;
+    try {
+      result = await insertDocument(client, "comments", newComment);
+      newComment._id = result.insertedId.toString(); // Convert ObjectId to string
 
-    const db = client.db();
-    const result = await db.collection("comments").insertOne(newComment);
-    console.log("data", newComment, result);
-    newComment.id = result.insertedId.toString(); // Convert ObjectId to string
-    res.status(201).json({
-      message: "Added comments",
-      comment: newComment,
-    });
+      res.status(201).json({
+        message: "Added comments",
+        comment: newComment,
+      });
+
+      client.close();
+    } catch (error) {
+      res.status(500).json({
+        message: "Inserting comment failed!",
+      });
+
+      client.close();
+      return;
+    }
   }
   if (req.method === "GET") {
-    const dummyComments = [
-      {
-        id: "c1",
-        name: "xyz",
-        email: "s@s.com",
-        text: "Some comments",
-      },
-      {
-        id: "c2",
-        name: "xyaz",
-        email: "s@as.com",
-        text: "Some comments again",
-      },
-    ];
-    const db = client.db();
-    const documents = await db
-      .collection("comments")
-      .find()
-      .sort({ _id: -1 }) // Sort by _id in descending order
-      .toArray();
-    console.log("documents", documents);
-    res.status(200).json({
-      comments: documents,
-    });
-    client.close();
+    let documents;
+    try {
+      documents = await getAllDocuments(client, "comments", { _id: -1 });
+      res.status(200).json({
+        comments: documents,
+      });
+
+      client.close();
+    } catch (error) {
+      res.status(500).json({
+        message: "Getting comments failed!",
+      });
+
+      client.close();
+      return;
+    }
   }
 }
 

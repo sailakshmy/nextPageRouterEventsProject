@@ -1,17 +1,4 @@
-import { MongoClient } from "mongodb";
-
-async function connectDatabase() {
-  const client = await MongoClient.connect(
-    "mongodb://Groot:IAmGroot@ac-lpjqpry-shard-00-00.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-01.87nimnv.mongodb.net:27017,ac-lpjqpry-shard-00-02.87nimnv.mongodb.net:27017/events?replicaSet=atlas-ejgl3x-shard-0&ssl=true&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
-  );
-  return client;
-}
-
-async function insertDocument(client, document) {
-  const db = client.db();
-  const result = await db.collection("newsletter").insertOne(document);
-  return result;
-}
+import { connectDatabase, insertDocument } from "../../helpers/db-utils";
 
 async function handler(req, res) {
   if (req.method === "POST") {
@@ -32,7 +19,7 @@ async function handler(req, res) {
       return;
     }
     try {
-      await insertDocument(client, { email: userEmail });
+      await insertDocument(client, "newsletter", { email: userEmail });
 
       client.close();
     } catch (error) {
