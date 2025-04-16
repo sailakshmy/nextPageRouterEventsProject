@@ -4,13 +4,12 @@
   left: 0;
   height: 5rem;
   width: 100%;
-  background-color: #1b1b1b;
+  /* background-color: #1b1b1b; */
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
   padding: 0.5rem 10%;
-  box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .notification h2 {
@@ -21,12 +20,15 @@
 
 .pending {
   background-color: #177cbe;
+  box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .success {
   background-color: #10be58;
+  box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .error {
   background-color: #e65035;
+  box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2);
 }
